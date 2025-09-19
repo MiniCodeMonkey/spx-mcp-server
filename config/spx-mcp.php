@@ -13,4 +13,15 @@ return [
 
     'enabled' => env('SPX_MCP_ENABLED', true),
 
+    /*
+    |--------------------------------------------------------------------------
+    | The directory where SPX stores its data files
+    |--------------------------------------------------------------------------
+    |
+    | This is configured in your php.ini file as `spx.data_dir`.
+    |
+    */
+
+    'spx_data_dir' => env('SPX_DATA_DIR', ini_get('spx.data_dir')),
+
 ];
