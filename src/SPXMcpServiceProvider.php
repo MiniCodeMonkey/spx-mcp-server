@@ -1,13 +1,13 @@
 <?php
 
-namespace Codemonkey\SpxMcpServer;
+namespace Codemonkey\SPXMcpServer;
 
-use Codemonkey\SpxMcpServer\Mcp\McpServer;
+use Codemonkey\SPXMcpServer\Mcp\McpServer;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Mcp\Facades\Mcp;
 
-class SpxMcpServiceProvider extends ServiceProvider
+class SPXMcpServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
@@ -57,7 +57,7 @@ class SpxMcpServiceProvider extends ServiceProvider
         if (app()->runningUnitTests()) {
             return false;
         }
-        
+
         if (!app()->environment('local') && config('app.debug', false) !== true) {
             return false;
         }

@@ -5,7 +5,12 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Codemonkey\\SpxMcpServer\\": "src/"
+      "Codemonkey\\SPXMcpServer\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
     }
   },
   "authors": [
@@ -19,15 +24,21 @@
     "laravel/mcp": "^0.2.0"
   },
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
   },
   "extra": {
     "laravel": {
       "providers": [
-        "Codemonkey\\SpxMcpServer\\SpxMcpServiceProvider"
+        "Codemonkey\\SPXMcpServer\\SPXMcpServiceProvider"
       ]
     }
   },
   "minimum-stability": "dev",
-  "prefer-stable": true
+  "prefer-stable": true,
+  "require-dev": {
+    "pestphp/pest": "^4.1"
+  }
 }

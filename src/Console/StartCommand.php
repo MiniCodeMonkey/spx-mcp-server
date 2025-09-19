@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Codemonkey\SpxMcpServer\Console;
+namespace Codemonkey\SPXMcpServer\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;

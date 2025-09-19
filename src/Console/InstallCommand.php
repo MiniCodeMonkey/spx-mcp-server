@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Codemonkey\SpxMcpServer\Console;
+namespace Codemonkey\SPXMcpServer\Console;
 
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -19,7 +19,7 @@ class InstallCommand extends Command
 
         $this->ensureMcpJsonExists();
 
-        if ($this->addSpxMcpServerToMcpJson()) {
+        if ($this->addSPXMcpServerToMcpJson()) {
             $this->info('SPX MCP server added to your .mcp.json file.');
         }
     }
@@ -35,7 +35,7 @@ class InstallCommand extends Command
         }
     }
 
-    private function addSpxMcpServerToMcpJson(): bool
+    private function addSPXMcpServerToMcpJson(): bool
     {
         $existingConfig = json_decode(file_get_contents($this->getMcpConfigFilename()), true, 512, JSON_THROW_ON_ERROR);
         if (isset($existingConfig['mcpServers']['spx-mcp'])) {

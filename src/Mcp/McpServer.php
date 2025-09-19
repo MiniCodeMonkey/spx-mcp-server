@@ -1,8 +1,9 @@
 <?php
 
-namespace Codemonkey\SpxMcpServer\Mcp;
+namespace Codemonkey\SPXMcpServer\Mcp;
 
-use Codemonkey\SpxMcpServer\Mcp\Tools\ListProfiles;
+use Codemonkey\SPXMcpServer\Mcp\Tools\AnalyzeProfile;
+use Codemonkey\SPXMcpServer\Mcp\Tools\ListProfiles;
 use Laravel\Mcp\Server;
 
 class McpServer extends Server
@@ -29,6 +30,7 @@ class McpServer extends Server
      */
     protected array $tools = [
         ListProfiles::class,
+        AnalyzeProfile::class,
     ];
 
     /**

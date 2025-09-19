@@ -1,6 +1,6 @@
 <?php
 
-namespace Codemonkey\SpxMcpServer\Mcp\Tools;
+namespace Codemonkey\SPXMcpServer\Mcp\Tools;
 
 use Illuminate\JsonSchema\JsonSchema;
 use Illuminate\Support\Collection;
@@ -74,7 +74,7 @@ class ListProfiles extends Tool
         return [
             'url' => $schema->string()
                 ->description('The URL to get a profile for (wildcard search).'),
-            'min_wall_time' => $schema->string()
+            'min_wall_time' => $schema->integer()
                 ->description('The minimum wall time in ms to return profiles for.')
         ];
     }
