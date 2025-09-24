@@ -39,7 +39,24 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function mockConfig(array $values = [])
 {
-    // ..
+    // Create a mock config function in the global namespace if it doesn't exist
+    if (!function_exists('config')) {
+        eval('
+            function config($key, $default = null) {
+                static $config = [];
+                if (is_array($key)) {
+                    $config = array_merge($config, $key);
+                    return null;
+                }
+                return $config[$key] ?? $default;
+            }
+        ');
+    }
+
+    // Set the config values
+    if ($values) {
+        config($values);
+    }
 }

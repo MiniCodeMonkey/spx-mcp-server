@@ -3,6 +3,10 @@
 namespace Codemonkey\SPXMcpServer\Mcp;
 
 use Codemonkey\SPXMcpServer\Mcp\Tools\AnalyzeProfile;
+use Codemonkey\SPXMcpServer\Mcp\Tools\GetCPUIntensiveFunctions;
+use Codemonkey\SPXMcpServer\Mcp\Tools\GetMemoryHogs;
+use Codemonkey\SPXMcpServer\Mcp\Tools\GetMostCalledFunctions;
+use Codemonkey\SPXMcpServer\Mcp\Tools\GetSlowestFunctions;
 use Codemonkey\SPXMcpServer\Mcp\Tools\ListProfiles;
 use Laravel\Mcp\Server;
 
@@ -30,7 +34,10 @@ class McpServer extends Server
      */
     protected array $tools = [
         ListProfiles::class,
-        AnalyzeProfile::class,
+        GetCPUIntensiveFunctions::class,
+        GetMemoryHogs::class,
+        GetMostCalledFunctions::class,
+        GetSlowestFunctions::class,
     ];
 
     /**

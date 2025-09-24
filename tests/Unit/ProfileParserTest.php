@@ -3,8 +3,8 @@
 use Codemonkey\SPXMcpServer\Mcp\SPX\ProfileParser;
 
 it('can parse an SPX profile dump', function () {
-    $jsonPath = __DIR__ . '/../spx-full-20250919_114821-b9eab65bde08-85-963547349.json';
-    $profilePath = __DIR__ . '/../spx-full-20250919_114821-b9eab65bde08-85-963547349.txt.gz';
+    $jsonPath = __DIR__ . '/../fixtures/spx-full-20250919_114821-b9eab65bde08-85-963547349.json';
+    $profilePath = __DIR__ . '/../fixtures/spx-full-20250919_114821-b9eab65bde08-85-963547349.txt.gz';
 
     // Load metadata from JSON
     $metadata = json_decode(file_get_contents($jsonPath), true);
