@@ -23,6 +23,7 @@ class ListProfiles extends Tool
     {
         $url = $request->get('url');
         $minWallTime = $request->get('min_wall_time', 0);
+        $limit = $request->get('limit', 5);
 
         $directory = config('spx-mcp.spx_data_dir');
 
@@ -45,6 +46,9 @@ class ListProfiles extends Tool
             return Response::text('No profiles found matching the criteria.');
         }
 
+        // Apply limit
+        $profiles = $profiles->take($limit);
+
         $profileDescriptions = $profiles->map(function ($profile) {
             return sprintf(
                 "Profile Key: %s\nExecuted At: %s\nHost: %s\nPID: %d\nTID: %d\nURL: %s\nWall Time (ms): %d\nPeak Memory (bytes): %d\nCalled Functions: %d\nCall Count: %d\n",
@@ -61,7 +65,9 @@ class ListProfiles extends Tool
             );
         });
 
-        return Response::text('The following SPX profile dumps were found: ' . PHP_EOL . $profileDescriptions->join("\n---\n"));
+        $totalCount = $this->getProfiles($directory)->count();
+        $message = sprintf('Showing %d of %d total SPX profile dumps:', $profiles->count(), $totalCount);
+        return Response::text($message . PHP_EOL . $profileDescriptions->join("\n---\n"));
     }
 
     /**
@@ -75,7 +81,10 @@ class ListProfiles extends Tool
             'url' => $schema->string()
                 ->description('The URL to get a profile for (wildcard search).'),
             'min_wall_time' => $schema->integer()
-                ->description('The minimum wall time in ms to return profiles for.')
+                ->description('The minimum wall time in ms to return profiles for.'),
+            'limit' => $schema->integer()
+                ->description('Maximum number of profiles to return (default: 5).')
+                ->default(5)
         ];
     }
 
@@ -83,12 +92,14 @@ class ListProfiles extends Tool
     {
         return collect(scandir($directory))
             ->filter(fn($file) => str_ends_with($file, '.json'))
+            ->sortByDesc(fn($file) => filemtime($directory . '/' . $file))
             ->map(function ($file) use ($directory) {
                 try {
                     return json_decode(file_get_contents($directory . '/' . $file), true, 512, JSON_THROW_ON_ERROR);
                 } catch (JsonException) {
                     return null;
                 }
-            })->filter();
+            })
+            ->filter();
     }
 }

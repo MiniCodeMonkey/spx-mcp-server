@@ -13,7 +13,7 @@ it('returns most called functions from a profile', function () {
     $tool = new GetMostCalledFunctions();
 
     $request = new Request([
-        'profile_key' => 'spx-full-20250919_114821-b9eab65bde08-85-963547349',
+        'profile_key' => 'spx-full-20251002_141757-f9e4875aa584-90-1264812635',
         'limit' => 10
     ]);
 
@@ -22,7 +22,7 @@ it('returns most called functions from a profile', function () {
     expect($response)->toBeInstanceOf(Response::class);
     expect($response->isError())->toBeFalse();
 
-    $content = (string) $response->content();
+    $content = (string)$response->content();
 
     // Check the response contains expected structure
     expect($content)->toContain('=== Most Called Functions (Top 10) ===');
@@ -38,7 +38,7 @@ it('uses default limit of 50 when not specified', function () {
     $tool = new GetMostCalledFunctions();
 
     $request = new Request([
-        'profile_key' => 'spx-full-20250919_114821-b9eab65bde08-85-963547349'
+        'profile_key' => 'spx-full-20251002_141757-f9e4875aa584-90-1264812635'
     ]);
 
     $response = $tool->handle($request);
@@ -46,7 +46,7 @@ it('uses default limit of 50 when not specified', function () {
     expect($response)->toBeInstanceOf(Response::class);
     expect($response->isError())->toBeFalse();
 
-    $content = (string) $response->content();
+    $content = (string)$response->content();
     expect($content)->toContain('=== Most Called Functions (Top 50) ===');
 });
 
@@ -61,14 +61,14 @@ it('returns error for non-existent profile', function () {
 
     expect($response)->toBeInstanceOf(Response::class);
     expect($response->isError())->toBeTrue();
-    expect((string) $response->content())->toContain('Profile with key non-existent-profile not found');
+    expect((string)$response->content())->toContain('Profile with key non-existent-profile not found');
 });
 
 it('handles custom limit parameter', function () {
     $tool = new GetMostCalledFunctions();
 
     $request = new Request([
-        'profile_key' => 'spx-full-20250919_114821-b9eab65bde08-85-963547349',
+        'profile_key' => 'spx-full-20251002_141757-f9e4875aa584-90-1264812635',
         'limit' => 3
     ]);
 
@@ -77,7 +77,7 @@ it('handles custom limit parameter', function () {
     expect($response)->toBeInstanceOf(Response::class);
     expect($response->isError())->toBeFalse();
 
-    $content = (string) $response->content();
+    $content = (string)$response->content();
     expect($content)->toContain('=== Most Called Functions (Top 3) ===');
 
     // Check that we have exactly 3 results
