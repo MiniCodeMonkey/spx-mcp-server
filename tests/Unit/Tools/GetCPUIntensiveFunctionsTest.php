@@ -13,7 +13,7 @@ it('returns CPU intensive functions from a profile', function () {
     $tool = new GetCPUIntensiveFunctions();
 
     $request = new Request([
-        'profile_key' => 'spx-full-20250919_114821-b9eab65bde08-85-963547349',
+        'profile_key' => 'spx-full-20251002_141757-f9e4875aa584-90-1264812635',
         'limit' => 10
     ]);
 
@@ -43,7 +43,7 @@ it('uses default limit of 50 when not specified', function () {
     $tool = new GetCPUIntensiveFunctions();
 
     $request = new Request([
-        'profile_key' => 'spx-full-20250919_114821-b9eab65bde08-85-963547349'
+        'profile_key' => 'spx-full-20251002_141757-f9e4875aa584-90-1264812635'
     ]);
 
     $response = $tool->handle($request);
@@ -73,7 +73,7 @@ it('handles custom limit parameter', function () {
     $tool = new GetCPUIntensiveFunctions();
 
     $request = new Request([
-        'profile_key' => 'spx-full-20250919_114821-b9eab65bde08-85-963547349',
+        'profile_key' => 'spx-full-20251002_141757-f9e4875aa584-90-1264812635',
         'limit' => 8
     ]);
 
@@ -108,7 +108,7 @@ it('formats CPU time values correctly', function () {
     $tool = new GetCPUIntensiveFunctions();
 
     $request = new Request([
-        'profile_key' => 'spx-full-20250919_114821-b9eab65bde08-85-963547349',
+        'profile_key' => 'spx-full-20251002_141757-f9e4875aa584-90-1264812635',
         'limit' => 5
     ]);
 
@@ -125,7 +125,7 @@ it('returns functions sorted by exclusive CPU time', function () {
     $tool = new GetCPUIntensiveFunctions();
 
     $request = new Request([
-        'profile_key' => 'spx-full-20250919_114821-b9eab65bde08-85-963547349',
+        'profile_key' => 'spx-full-20251002_141757-f9e4875aa584-90-1264812635',
         'limit' => 5
     ]);
 

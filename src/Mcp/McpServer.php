@@ -3,10 +3,21 @@
 namespace Codemonkey\SPXMcpServer\Mcp;
 
 use Codemonkey\SPXMcpServer\Mcp\Tools\AnalyzeProfile;
+use Codemonkey\SPXMcpServer\Mcp\Tools\GetAutoloadingOverhead;
+use Codemonkey\SPXMcpServer\Mcp\Tools\GetCallTree;
 use Codemonkey\SPXMcpServer\Mcp\Tools\GetCPUIntensiveFunctions;
+use Codemonkey\SPXMcpServer\Mcp\Tools\GetDatabaseQueries;
+use Codemonkey\SPXMcpServer\Mcp\Tools\GetExclusiveTimeFunctions;
+use Codemonkey\SPXMcpServer\Mcp\Tools\GetIOOperations;
 use Codemonkey\SPXMcpServer\Mcp\Tools\GetMemoryHogs;
+use Codemonkey\SPXMcpServer\Mcp\Tools\GetMiddlewareAnalysis;
 use Codemonkey\SPXMcpServer\Mcp\Tools\GetMostCalledFunctions;
+use Codemonkey\SPXMcpServer\Mcp\Tools\GetRecursiveFunctions;
+use Codemonkey\SPXMcpServer\Mcp\Tools\GetRedisOperations;
 use Codemonkey\SPXMcpServer\Mcp\Tools\GetSlowestFunctions;
+use Codemonkey\SPXMcpServer\Mcp\Tools\GetThirdPartyPackageImpact;
+use Codemonkey\SPXMcpServer\Mcp\Tools\GetTimelineView;
+use Codemonkey\SPXMcpServer\Mcp\Tools\GetWallTimeDistribution;
 use Codemonkey\SPXMcpServer\Mcp\Tools\ListProfiles;
 use Laravel\Mcp\Server;
 
@@ -34,10 +45,21 @@ class McpServer extends Server
      */
     protected array $tools = [
         ListProfiles::class,
-        GetCPUIntensiveFunctions::class,
-        GetMemoryHogs::class,
-        GetMostCalledFunctions::class,
         GetSlowestFunctions::class,
+        GetExclusiveTimeFunctions::class,
+        GetMostCalledFunctions::class,
+        GetMemoryHogs::class,
+        GetCPUIntensiveFunctions::class,
+        GetCallTree::class,
+        GetTimelineView::class,
+        GetRecursiveFunctions::class,
+        GetWallTimeDistribution::class,
+        GetAutoloadingOverhead::class,
+        GetThirdPartyPackageImpact::class,
+        GetDatabaseQueries::class,
+        GetRedisOperations::class,
+        GetIOOperations::class,
+        GetMiddlewareAnalysis::class,
     ];
 
     /**

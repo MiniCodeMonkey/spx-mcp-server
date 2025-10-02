@@ -13,7 +13,7 @@ it('returns memory hog functions from a profile', function () {
     $tool = new GetMemoryHogs();
 
     $request = new Request([
-        'profile_key' => 'spx-full-20250919_114821-b9eab65bde08-85-963547349',
+        'profile_key' => 'spx-full-20251002_141757-f9e4875aa584-90-1264812635',
         'limit' => 10
     ]);
 
@@ -22,7 +22,7 @@ it('returns memory hog functions from a profile', function () {
     expect($response)->toBeInstanceOf(Response::class);
     expect($response->isError())->toBeFalse();
 
-    $content = (string) $response->content();
+    $content = (string)$response->content();
 
     // Check the response contains expected structure
     expect($content)->toContain('=== Top Memory Users (Top 10) ===');
@@ -43,7 +43,7 @@ it('uses default limit of 50 when not specified', function () {
     $tool = new GetMemoryHogs();
 
     $request = new Request([
-        'profile_key' => 'spx-full-20250919_114821-b9eab65bde08-85-963547349'
+        'profile_key' => 'spx-full-20251002_141757-f9e4875aa584-90-1264812635'
     ]);
 
     $response = $tool->handle($request);
@@ -51,7 +51,7 @@ it('uses default limit of 50 when not specified', function () {
     expect($response)->toBeInstanceOf(Response::class);
     expect($response->isError())->toBeFalse();
 
-    $content = (string) $response->content();
+    $content = (string)$response->content();
     expect($content)->toContain('=== Top Memory Users (Top 50) ===');
 });
 
@@ -66,14 +66,14 @@ it('returns error for non-existent profile', function () {
 
     expect($response)->toBeInstanceOf(Response::class);
     expect($response->isError())->toBeTrue();
-    expect((string) $response->content())->toContain('Profile with key non-existent-profile not found');
+    expect((string)$response->content())->toContain('Profile with key non-existent-profile not found');
 });
 
 it('handles custom limit parameter', function () {
     $tool = new GetMemoryHogs();
 
     $request = new Request([
-        'profile_key' => 'spx-full-20250919_114821-b9eab65bde08-85-963547349',
+        'profile_key' => 'spx-full-20251002_141757-f9e4875aa584-90-1264812635',
         'limit' => 7
     ]);
 
@@ -82,7 +82,7 @@ it('handles custom limit parameter', function () {
     expect($response)->toBeInstanceOf(Response::class);
     expect($response->isError())->toBeFalse();
 
-    $content = (string) $response->content();
+    $content = (string)$response->content();
     expect($content)->toContain('=== Top Memory Users (Top 7) ===');
 
     // Check that we have exactly 7 results
@@ -108,12 +108,12 @@ it('formats memory values correctly', function () {
     $tool = new GetMemoryHogs();
 
     $request = new Request([
-        'profile_key' => 'spx-full-20250919_114821-b9eab65bde08-85-963547349',
+        'profile_key' => 'spx-full-20251002_141757-f9e4875aa584-90-1264812635',
         'limit' => 5
     ]);
 
     $response = $tool->handle($request);
-    $content = (string) $response->content();
+    $content = (string)$response->content();
 
     // Check that memory values are formatted with appropriate units
     // Memory should be shown as B, KB, MB, or GB

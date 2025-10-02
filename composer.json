@@ -21,7 +21,8 @@
   ],
   "require": {
     "php": "^8.1",
-    "laravel/mcp": "^0.2.0"
+    "laravel/mcp": "^0.2.0",
+    "ext-zlib": "*"
   },
   "config": {
     "sort-packages": true,

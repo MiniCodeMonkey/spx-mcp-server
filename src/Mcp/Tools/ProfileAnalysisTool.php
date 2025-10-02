@@ -5,7 +5,6 @@ namespace Codemonkey\SPXMcpServer\Mcp\Tools;
 use Codemonkey\SPXMcpServer\Mcp\SPX\ProfileParser;
 use Illuminate\JsonSchema\JsonSchema;
 use JsonException;
-use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
 use Laravel\Mcp\Server\Tool;
 use Throwable;
@@ -17,10 +16,13 @@ abstract class ProfileAnalysisTool extends Tool
      */
     protected function parseProfile(string $profileKey): ProfileParser|Response
     {
+        $this->log('Parsing profile with key: ' . $profileKey);
         $metaFile = config('spx-mcp.spx_data_dir') . '/' . $profileKey . '.json';
         if (!file_exists($metaFile)) {
             return Response::error('Profile with key ' . $profileKey . ' not found.');
         }
+
+        $this->log('Found metadata file: ' . $metaFile);
 
         try {
             $metadata = json_decode(file_get_contents($metaFile), true, 512, JSON_THROW_ON_ERROR);
@@ -28,11 +30,16 @@ abstract class ProfileAnalysisTool extends Tool
             return Response::error('Failed to decode profile data: ' . $e->getMessage());
         }
 
+        $this->log('Parsing metadata: ' . print_r($metadata, true));
+
         try {
             $parser = new ProfileParser($metadata['enabled_metrics'] ?? []);
+            $this->log('Initialized parser, now parsing data file');
             $parser->parse(config('spx-mcp.spx_data_dir') . '/' . $profileKey . '.txt.gz');
+            $this->log('Parsed profile data successfully');
             return $parser;
         } catch (Throwable $e) {
+            $this->log('Error parsing profile data: ' . $e->getMessage());
             return Response::error('Failed to parse profile data file: ' . $e->getMessage());
         }
     }
@@ -135,5 +142,10 @@ abstract class ProfileAnalysisTool extends Tool
         }
 
         return $output;
+    }
+
+    protected function log(string $line): void
+    {
+        file_put_contents(__DIR__ . '/../../spx-mcp.log', date('Y-m-d H:i:s') . ' ' . $line . "\n", FILE_APPEND);
     }
 }
