@@ -21,7 +21,7 @@ it('returns recursive functions from a profile', function () {
     expect($response->isError())->toBeFalse();
 
     $content = (string)$response->content();
-    expect($content)->toContain('===');
+    expect($content)->toMatchSnapshot();
 });
 
 it('returns error for non-existent profile', function () {

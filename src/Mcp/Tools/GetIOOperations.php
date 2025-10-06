@@ -47,7 +47,7 @@ class GetIOOperations extends ProfileAnalysisTool
                     $output .= sprintf("    - %s (%d calls, %s)\n",
                         substr($func['name'], 0, 40),
                         $func['call_count'],
-                        $this->formatTime($func['inclusive_time']));
+                        $this->formatTime($func['exclusive_time']));
                 }
             }
             $output .= "\n";

@@ -36,10 +36,10 @@ class GetAutoloadingOverhead extends ProfileAnalysisTool
         
         foreach (array_slice($autoloadStats['functions'], 0, $limit) as $func) {
             $output .= sprintf("  %s\n", substr($func['name'], 0, 50));
-            $output .= sprintf("    Time: %s\n", $this->formatTime($func['inclusive_time']));
+            $output .= sprintf("    Time: %s\n", $this->formatTime($func['exclusive_time']));
             $output .= sprintf("    Calls: %d\n", $func['call_count']);
             if ($func['call_count'] > 0) {
-                $output .= sprintf("    Avg: %s\n", $this->formatTime($func['inclusive_time'] / $func['call_count']));
+                $output .= sprintf("    Avg: %s\n", $this->formatTime($func['exclusive_time'] / $func['call_count']));
             }
             $output .= "\n";
         }

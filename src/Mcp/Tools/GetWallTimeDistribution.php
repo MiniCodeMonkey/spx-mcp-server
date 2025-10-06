@@ -37,12 +37,18 @@ class GetWallTimeDistribution extends ProfileAnalysisTool
 
             foreach (array_slice($functions, 0, $limit) as $func) {
                 $output .= sprintf("  %s\n", substr($func['name'], 0, 50));
-                $output .= sprintf("    Wall time: %s\n", $this->formatTime($func['inclusive_time']));
-                $output .= sprintf("    CPU time: %s\n", $this->formatTime($func['inclusive_cpu']));
-                $output .= sprintf("    I/O wait: %s (%.1f%%)\n",
-                    $this->formatTime($func['io_wait_time']),
-                    $func['io_percentage']);
                 $output .= sprintf("    Calls: %d\n", $func['call_count']);
+                if ($func['call_count'] > 0) {
+                    $avgWallTime = $func['inclusive_time'] / $func['call_count'];
+                    $avgCpuTime = $func['inclusive_cpu'] / $func['call_count'];
+                    $avgIoWait = $func['io_wait_time'] / $func['call_count'];
+                    $output .= sprintf("    Avg wall time: %s\n", $this->formatTime($avgWallTime));
+                    $output .= sprintf("    Avg CPU time: %s\n", $this->formatTime($avgCpuTime));
+                    $output .= sprintf("    Avg I/O wait: %s (%.1f%%)\n",
+                        $this->formatTime($avgIoWait),
+                        $func['io_percentage']);
+                }
+                $output .= sprintf("    Total wall time (exclusive): %s\n", $this->formatTime($func['exclusive_time']));
                 $output .= "\n";
             }
         }

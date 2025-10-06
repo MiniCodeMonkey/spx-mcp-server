@@ -34,7 +34,7 @@ class GetRedisOperations extends ProfileAnalysisTool
         $output .= "\nOperations Breakdown:\n";
         foreach ($redis['operations'] as $opType => $operations) {
             if (empty($operations)) continue;
-            $opTime = array_sum(array_column($operations, 'inclusive_time'));
+            $opTime = array_sum(array_column($operations, 'exclusive_time'));
             $opCalls = array_sum(array_column($operations, 'call_count'));
             $output .= sprintf("  %s: %d calls, %s\n",
                 strtoupper($opType), $opCalls, $this->formatTime($opTime));

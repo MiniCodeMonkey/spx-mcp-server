@@ -15,12 +15,19 @@ class ProfileParser
     private array $recursionTracking = [];
 
     /**
-     * @param array $enabledMetrics Associative array of metric_key => bool from JSON metadata
+     * @param array $enabledMetrics Array of metric names or associative array of metric_key => bool from JSON metadata
      */
     public function __construct(array $enabledMetrics)
     {
         ini_set('memory_limit', '-1');
-        $this->metrics = array_keys(array_filter($enabledMetrics));
+        // Handle both plain array ["wt", "ct", ...] and associative array ["wt" => true, "ct" => false, ...]
+        if (array_keys($enabledMetrics) === range(0, count($enabledMetrics) - 1)) {
+            // Plain array - use directly
+            $this->metrics = $enabledMetrics;
+        } else {
+            // Associative array - filter and extract keys
+            $this->metrics = array_keys(array_filter($enabledMetrics));
+        }
     }
 
     protected function log(string $line): void
@@ -200,9 +207,10 @@ class ProfileParser
                 }
 
                 // Calculate inclusive metrics (total time/memory in function)
-                $wallTime = ($event['metrics']['wt'] ?? 0) - ($frame['start_metrics']['wt'] ?? 0);
+                // Note: SPX metrics are in nanoseconds, convert to microseconds
+                $wallTime = (($event['metrics']['wt'] ?? 0) - ($frame['start_metrics']['wt'] ?? 0)) / 1000;
                 $memory = ($event['metrics']['mu'] ?? 0) - ($frame['start_metrics']['mu'] ?? 0);
-                $cpuTime = ($event['metrics']['ct'] ?? 0) - ($frame['start_metrics']['ct'] ?? 0);
+                $cpuTime = (($event['metrics']['ct'] ?? 0) - ($frame['start_metrics']['ct'] ?? 0)) / 1000;
 
                 $this->functionStats[$funcIdx]['inclusive_time'] += $wallTime;
                 $this->functionStats[$funcIdx]['inclusive_memory'] += $memory;
@@ -223,7 +231,7 @@ class ProfileParser
 
                 // Update recursion tracking
                 if (isset($this->recursionTracking[$funcIdx])) {
-                    $this->recursionTracking[$funcIdx]['total_time'] += $wallTime;
+                    $this->recursionTracking[$funcIdx]['total_time'] += $exclusiveTime;
                 }
 
                 // Timeline entry
@@ -244,6 +252,17 @@ class ProfileParser
                     $callStack[$parentIdx]['children_time'] += $wallTime;
                     $callStack[$parentIdx]['children_memory'] += $memory;
                     $callStack[$parentIdx]['children_cpu'] += $cpuTime;
+
+                    // Handle recursion: subtract exclusive time from recursive parent's children
+                    // This prevents double-counting in recursive scenarios
+                    for ($k = count($callStack) - 1; $k >= 0; $k--) {
+                        if ($callStack[$k]['func_idx'] === $funcIdx) {
+                            $callStack[$k]['children_time'] -= $exclusiveTime;
+                            $callStack[$k]['children_memory'] -= $exclusiveMemory;
+                            $callStack[$k]['children_cpu'] -= $exclusiveCpu;
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -505,7 +524,7 @@ class ProfileParser
                 strpos($funcName, 'require') !== false ||
                 strpos($funcName, 'spl_autoload_call') !== false) {
 
-                $autoloadStats['total_time'] += $stat['inclusive_time'];
+                $autoloadStats['total_time'] += $stat['exclusive_time'];
                 $autoloadStats['total_calls'] += $stat['call_count'];
                 $autoloadStats['functions'][] = $stat;
             }
@@ -542,7 +561,7 @@ class ProfileParser
                     ];
                 }
 
-                $packages[$package]['total_time'] += $stat['inclusive_time'];
+                $packages[$package]['total_time'] += $stat['exclusive_time'];
                 $packages[$package]['total_calls'] += $stat['call_count'];
                 $packages[$package]['functions'][] = $stat;
             }
@@ -582,7 +601,7 @@ class ProfileParser
                 strpos($funcName, 'PDO::') !== false ||
                 strpos($funcName, 'mysqli') !== false) {
 
-                $queries['total_time'] += $stat['inclusive_time'];
+                $queries['total_time'] += $stat['exclusive_time'];
                 $queries['total_queries'] += $stat['call_count'];
 
                 // Categorize by operation type
@@ -633,7 +652,7 @@ class ProfileParser
                 stripos($funcName, 'Cache\\RedisStore') !== false ||
                 stripos($funcName, 'Predis') !== false) {
 
-                $redis['total_time'] += $stat['inclusive_time'];
+                $redis['total_time'] += $stat['exclusive_time'];
                 $redis['total_operations'] += $stat['call_count'];
 
                 // Categorize by operation type
@@ -682,7 +701,7 @@ class ProfileParser
 
             // File I/O
             if (preg_match('/^(file_|fread|fwrite|fopen|fclose|file_get_contents|file_put_contents|readfile|is_file|is_dir|scandir|glob)/i', $funcName)) {
-                $io['file']['total_time'] += $stat['inclusive_time'];
+                $io['file']['total_time'] += $stat['exclusive_time'];
                 $io['file']['total_operations'] += $stat['call_count'];
                 $io['file']['functions'][] = $stat;
             } // Network I/O
@@ -690,14 +709,14 @@ class ProfileParser
                 stripos($funcName, 'http') !== false ||
                 stripos($funcName, 'guzzle') !== false ||
                 stripos($funcName, 'RPC::call') !== false) {
-                $io['network']['total_time'] += $stat['inclusive_time'];
+                $io['network']['total_time'] += $stat['exclusive_time'];
                 $io['network']['total_operations'] += $stat['call_count'];
                 $io['network']['functions'][] = $stat;
             } // Socket I/O
             elseif (stripos($funcName, 'socket_') !== false ||
                 stripos($funcName, 'SocketRelay') !== false ||
                 stripos($funcName, 'stream_socket') !== false) {
-                $io['socket']['total_time'] += $stat['inclusive_time'];
+                $io['socket']['total_time'] += $stat['exclusive_time'];
                 $io['socket']['total_operations'] += $stat['call_count'];
                 $io['socket']['functions'][] = $stat;
             }
@@ -752,9 +771,9 @@ class ProfileParser
                 // Find corresponding function stats
                 if (isset($this->functionStats[$entry['func_idx']])) {
                     $stat = $this->functionStats[$entry['func_idx']];
-                    $middleware['middleware_list'][$middlewareName]['total_time'] += $stat['inclusive_time'];
+                    $middleware['middleware_list'][$middlewareName]['total_time'] += $stat['exclusive_time'];
                     $middleware['middleware_list'][$middlewareName]['call_count'] += $stat['call_count'];
-                    $middleware['total_time'] += $stat['inclusive_time'];
+                    $middleware['total_time'] += $stat['exclusive_time'];
                     $middleware['total_calls'] += $stat['call_count'];
                 }
 

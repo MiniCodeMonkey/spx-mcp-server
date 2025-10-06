@@ -34,7 +34,7 @@ class GetDatabaseQueries extends ProfileAnalysisTool
         $output .= "\nOperations Breakdown:\n";
         foreach ($queries['operations'] as $opType => $operations) {
             if (empty($operations)) continue;
-            $opTime = array_sum(array_column($operations, 'inclusive_time'));
+            $opTime = array_sum(array_column($operations, 'exclusive_time'));
             $opCalls = array_sum(array_column($operations, 'call_count'));
             $output .= sprintf("  %s: %d calls, %s\n",
                 strtoupper($opType), $opCalls, $this->formatTime($opTime));
@@ -45,7 +45,7 @@ class GetDatabaseQueries extends ProfileAnalysisTool
             foreach ($queries['potential_n_plus_one'] as $func) {
                 $output .= sprintf("  %s\n", substr($func['name'], 0, 50));
                 $output .= sprintf("    Calls: %d (may indicate N+1 problem)\n", $func['call_count']);
-                $output .= sprintf("    Total time: %s\n", $this->formatTime($func['inclusive_time']));
+                $output .= sprintf("    Total time: %s\n", $this->formatTime($func['exclusive_time']));
             }
         }
 
